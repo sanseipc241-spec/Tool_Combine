@@ -4,6 +4,8 @@ import fitz  # PyMuPDF
 import tkinter as tk
 from tkinter import filedialog, messagebox
 import win32com.client as win32
+import subprocess
+import sys
 
 XL_PAPER_A4 = 9  # Excel constant
 
@@ -65,6 +67,7 @@ class CombineTool:
         excel = win32.Dispatch("Excel.Application")
         excel.Visible = False
         excel.DisplayAlerts = False
+        excel.ScreenUpdating = False  # ===== TOI UU TOC DO =====
 
         pdf_list = []
 
@@ -104,7 +107,7 @@ class CombineTool:
         combined_doc.close()
 
         # ===== STEP 3: Rotate landscape pages =====
-        rotated_path = os.path.join(out_dir, "Rotated_Combined.pdf")
+        rotated_path = os.path.join(out_dir, "Soft_PAL(Rotated_Combined).pdf")
         doc = fitz.open(combined_path)
 
         for page in doc:
@@ -123,9 +126,18 @@ class CombineTool:
             if os.path.exists(pdf_tmp):
                 shutil.rmtree(pdf_tmp)
         except Exception as e:
-            print("Canh bao: khong xoa duoc file tam:", e)
+            print("Warning: failed to clean temporary files:", e)
 
-        messagebox.showinfo("Done", "Hoan tat! Chi con Rotated_Combined.pdf")
+        # ===== STEP 5: OPEN OUTPUT FOLDER =====
+        try:
+            if sys.platform.startswith("win"):
+                os.startfile(out_dir)
+            else:
+                subprocess.Popen(["open", out_dir])
+        except Exception as e:
+            print("Warning: failed to open output folder:", e)
+
+        messagebox.showinfo("Done", "Process completed successfully.")
 
 
 if __name__ == "__main__":
