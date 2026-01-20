@@ -35,4 +35,5 @@ exe = EXE(
     strip=False,
     upx=True,
     console=False,
+     icon="S_icon.ico",
 )
