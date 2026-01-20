@@ -1,5 +1,6 @@
 # -*- mode: python ; coding: utf-8 -*-
 
+import os
 from PyInstaller.utils.hooks import collect_submodules
 
 block_cipher = None
@@ -7,6 +8,7 @@ block_cipher = None
 hiddenimports = (
     collect_submodules("win32com")
     + collect_submodules("pythoncom")
+    + collect_submodules("fitz")
 )
 
 a = Analysis(
@@ -35,5 +37,5 @@ exe = EXE(
     strip=False,
     upx=True,
     console=False,
-     icon="S_icon.ico",
+    icon=os.path.join(os.getcwd(), "S_icon.ico"),
 )
